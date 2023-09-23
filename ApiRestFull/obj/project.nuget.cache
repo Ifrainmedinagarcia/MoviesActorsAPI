@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "dgSpecHash": "GCcDYlVb4Eicdr14PjON/muWOHP6hT7BeXjcZ7GBwf0PKiugt+Qa45gKwtM2njuMD1M1vUGHmnIq9nk9QIGsJg==",
+  "dgSpecHash": "VTvfKQiJuBs8lXKxB8+svS0SquOOf9vyefu+6EZ6tyOBf7vkik5ibk8YTuZIWpxyQdirjHLWDDJEr8Y6kFQhjw==",
   "success": true,
   "projectFilePath": "C:\\Users\\Ifrain Medina Garcia\\Desktop\\Ifrain\\Learning\\Backend\\ApiRestFull\\ApiRestFull\\ApiRestFull.csproj",
   "expectedPackageFiles": [
@@ -9,6 +9,8 @@
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\azure.core\\1.24.0\\azure.core.1.24.0.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\azure.identity\\1.6.0\\azure.identity.1.6.0.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\humanizer.core\\2.14.1\\humanizer.core.2.14.1.nupkg.sha512",
+    "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\microsoft.aspnetcore.jsonpatch\\7.0.0\\microsoft.aspnetcore.jsonpatch.7.0.0.nupkg.sha512",
+    "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\microsoft.aspnetcore.mvc.newtonsoftjson\\7.0.0\\microsoft.aspnetcore.mvc.newtonsoftjson.7.0.0.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.8\\microsoft.aspnetcore.openapi.7.0.8.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\microsoft.bcl.asyncinterfaces\\1.1.1\\microsoft.bcl.asyncinterfaces.1.1.1.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\microsoft.csharp\\4.7.0\\microsoft.csharp.4.7.0.nupkg.sha512",
@@ -47,6 +49,8 @@
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\microsoft.win32.registry\\5.0.0\\microsoft.win32.registry.5.0.0.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\microsoft.win32.systemevents\\5.0.0\\microsoft.win32.systemevents.5.0.0.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\mono.texttemplating\\2.2.1\\mono.texttemplating.2.2.1.nupkg.sha512",
+    "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\newtonsoft.json\\13.0.3\\newtonsoft.json.13.0.3.nupkg.sha512",
+    "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\newtonsoft.json.bson\\1.0.2\\newtonsoft.json.bson.1.0.2.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\swashbuckle.aspnetcore\\6.5.0\\swashbuckle.aspnetcore.6.5.0.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\swashbuckle.aspnetcore.swagger\\6.5.0\\swashbuckle.aspnetcore.swagger.6.5.0.nupkg.sha512",
     "C:\\Users\\Ifrain Medina Garcia\\.nuget\\packages\\swashbuckle.aspnetcore.swaggergen\\6.5.0\\swashbuckle.aspnetcore.swaggergen.6.5.0.nupkg.sha512",

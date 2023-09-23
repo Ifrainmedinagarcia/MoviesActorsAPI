@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using ApiRestFull.Entities;
+using Newtonsoft.Json;
 
 namespace ApiRestFull.DTO;
 
@@ -13,5 +14,8 @@ public class MovieCreationDTo
     [Required]
     public int Duration { get; set; }
     public ClassificationType Type { get; set; }
+    
     public List<int> Categories { get; set; }
+    
+    public List<int> Actors { get; set; }
 }

@@ -17,15 +17,16 @@ builder.Services.AddDbContext<ApplicationDbContext>(options =>
 
 //AutoMapper Configure
 builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
-
-/*builder.Services.AddControllers().AddJsonOptions(options => 
-{
-    options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve;
-});*/
+builder.Services.AddControllers()
+    .AddNewtonsoftJson(options =>
+    {
+        options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
+    });
 
 #region Dependecies Injection
 builder.Services.AddScoped<ICategoryRepository, CategoryRepository>();
 builder.Services.AddScoped<IMovieRepository, MovieRepository>();
+builder.Services.AddScoped<IActorRepository, ActorRepository>();
 #endregion
 
 var app = builder.Build();

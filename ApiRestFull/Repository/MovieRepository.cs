@@ -18,6 +18,8 @@ public class MovieRepository : IMovieRepository
         return await _context.Movies
             .Include(x => x.MovieCategories)
             .ThenInclude(x => x.Category)
+            .Include(x => x.MoviesActors)
+            .ThenInclude(x => x.Actor)
             .ToListAsync();
     }
 
