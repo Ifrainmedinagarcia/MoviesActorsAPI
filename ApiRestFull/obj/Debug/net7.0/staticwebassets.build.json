@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "s3hT6miEMWv1pIUfGk5qTdcXbGVYX5QhRiLd8vv/S0s=",
+  "Source": "ApiRestFull",
+  "BasePath": "_content/ApiRestFull",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
