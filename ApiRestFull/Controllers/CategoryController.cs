@@ -3,6 +3,7 @@ using ApiRestFull.Entities;
 using ApiRestFull.Repository.IRepository;
 using AutoMapper;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiRestFull.Controllers;
@@ -74,24 +75,53 @@ public class CategoryController : ControllerBase
     [ProducesResponseType(StatusCodes.Status404NotFound)]
     [ProducesResponseType(StatusCodes.Status400BadRequest)]
     [ProducesResponseType(StatusCodes.Status500InternalServerError)]
-    public async Task<ActionResult> Patch(int id, [FromBody] CategoryCreationDTo categoryCreationDTo)
+    public async Task<ActionResult> Put(int id, [FromBody] CategoryCreationDTo categoryCreationDTo)
     {
         if (!ModelState.IsValid) return BadRequest(ModelState);
         if (string.IsNullOrEmpty(categoryCreationDTo.CategoryName)) return BadRequest();
-        var isExist = await _categoryRepository.IsExistCategory(id);
-        if (!isExist) return NotFound("The category that you want to update doesn't exist");
-        
-        var category = _mapper.Map<Category>(categoryCreationDTo);
-        category.Id = id;
-        
-        var isAlreadyExist = await _categoryRepository.IsExistCategory(category.CategoryName);
-        
+
+        var originalCategory = await _categoryRepository.GetCategoryById(id);
+        if (originalCategory == null) return NotFound("The category that you want to update doesn't exist");
+
+        _mapper.Map(categoryCreationDTo, originalCategory);
+
+        var isAlreadyExist = await _categoryRepository.IsExistCategory(originalCategory.CategoryName);
         if (isAlreadyExist) return BadRequest("The category is already exist");
-        
-        var canUpdateCategory  = await _categoryRepository.UpdateCategory(category);
-        if (!canUpdateCategory) return BadRequest($"Something error has happened updating {category.CategoryName}");
-        
+
+        var canUpdateCategory  = await _categoryRepository.UpdateCategory(originalCategory);
+        if (!canUpdateCategory) return BadRequest($"Something error has happened updating {originalCategory.CategoryName}");
+
         return NoContent();
+    }
+
+
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<CategoryPatchDTo> jsonPatchDocument)
+    {
+        if (jsonPatchDocument is null) return BadRequest();
+
+        var categoryFromDb = await _categoryRepository.GetCategoryById(id);
+        if (categoryFromDb is null) return NotFound();
+
+        categoryFromDb.UpdatedAt = DateTime.Now;
+
+        var categoryDto = _mapper.Map<CategoryPatchDTo>(categoryFromDb);
+        
+        jsonPatchDocument.ApplyTo(categoryDto, ModelState);
+
+        var isValid = TryValidateModel(categoryDto);
+
+        if (!isValid) return BadRequest();
+
+        _mapper.Map(categoryDto, categoryFromDb);
+
+        var canToUpdate = await _categoryRepository.Save();
+
+        if (!canToUpdate) return BadRequest();
+
+        return NoContent();
+
+
     }
 
     [HttpDelete("{id:int}", Name = "DeleteCategory")]

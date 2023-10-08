@@ -14,7 +14,7 @@ public class Movie
     public enum ClassificationType { Seven, Thirteen, Sixteen,  Eighteen  }
     public ClassificationType Type { get; set; }
     public DateTime CreationDate { get; set; }
-    public DateTime UpdatedDate { get; set; }
+    public DateTime UpdatedAt { get; set; }
     public List<MovieCategories> MovieCategories{ get; set; }
     public List<MoviesActors> MoviesActors { get; set; }
 }

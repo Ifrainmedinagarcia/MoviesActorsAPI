@@ -1,9 +1,8 @@
 namespace ApiRestFull.DTO;
 
-public class ActorDTo
+public class ActorPatchDTo
 {
-    public int Id { get; set; }
     public string Name { get; set; }
     public int Age { get; set; }
-    public List<string> Movies { get; set; }
+    public DateTime Birthday { get; set; }
 }

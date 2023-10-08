@@ -25,13 +25,27 @@ public class MapperProfile : Profile
         #endregion
         
         #region POST
-            CreateMap<CategoryCreationDTo, Category>().ReverseMap();
+            CreateMap<CategoryCreationDTo, Category>()
+                .ForMember(dest => dest.CreationDate, opt => opt.Ignore());
+                
             CreateMap<MovieCreationDTo, Movie>()
                 .ForMember(dest => dest.MoviesActors, opt => opt.MapFrom(MapActorMovies))
                 .ForMember(dest => dest.MovieCategories, opt => opt.MapFrom(MapMovieCategories))
                 .ReverseMap();
             CreateMap<ActorCreationDTo, Actor>()
                 .ReverseMap();
+            
+            CreateMap<MoviePatchDTo, Movie>()
+                .ForMember(dest => dest.MoviesActors, opt => opt.MapFrom(MapMoviesActorPatch))
+                .ForMember(dest => dest.MovieCategories, opt => opt.MapFrom(MapMovieCategoriesPatch))
+                .ReverseMap();
+            
+            CreateMap<Movie, MoviePatchDTo>()
+                .ForMember(dest => dest.Actors, opt => opt.MapFrom(src => src.MoviesActors.Select(ma => ma.ActorId)))
+                .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.MovieCategories.Select(mc => mc.CategoryId)));
+            
+            CreateMap<ActorPatchDTo, Actor>().ReverseMap();
+            CreateMap<CategoryPatchDTo, Category>().ReverseMap();
 
             #endregion
     }
@@ -43,6 +57,28 @@ public class MapperProfile : Profile
         categoriesList.AddRange(movieCreationDTo.Categories.Select(item => new MovieCategories { CategoryId = item }));
         return categoriesList;
     }
+    
+    private static List<MovieCategories> MapMovieCategoriesPatch(MoviePatchDTo moviePatch, Movie movie)
+    {
+        var categoriesList = new List<MovieCategories>();
+        if (moviePatch.Categories is null) return categoriesList;
+        categoriesList.AddRange(moviePatch.Categories.Select(categoryId => new MovieCategories() 
+        { 
+            CategoryId = categoryId 
+        }));
+        return categoriesList;
+    }
+    
+    private static List<MoviesActors> MapMoviesActorPatch(MoviePatchDTo moviePatch, Movie movie)
+    {
+        var actorsList = new List<MoviesActors>();
+        if (moviePatch.Actors is null) return actorsList;
+        actorsList.AddRange(moviePatch.Actors.Select(actorId => new MoviesActors() 
+        { 
+            ActorId = actorId 
+        }));
+        return actorsList;
+    }
 
     private static List<MoviesActors> MapActorMovies(MovieCreationDTo movieCreationDTo, Movie movie)
     {
@@ -51,5 +87,4 @@ public class MapperProfile : Profile
         actorMoviesResult.AddRange(movieCreationDTo.Actors.Select(item => new MoviesActors() { ActorId = item }));
         return actorMoviesResult;
     }
-    
 }

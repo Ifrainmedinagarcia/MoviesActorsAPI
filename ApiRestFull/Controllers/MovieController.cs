@@ -2,6 +2,7 @@ using ApiRestFull.DTO;
 using ApiRestFull.Entities;
 using ApiRestFull.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiRestFull.Controllers;
@@ -42,6 +43,28 @@ public class MovieController : ControllerBase
         return Ok(movies);
     }
     
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [HttpGet("byCategoryName")]
+    public async Task<ActionResult<List<MovieDTo>>> Get(string categoryName)
+    {
+        var movieFromDb = await _movieRepository.GetMoviesByCategory(categoryName);
+        var movie = _mapper.Map<List<MovieDTo>>(movieFromDb);
+        return Ok(movie);
+    }
+
+    [ProducesResponseType(StatusCodes.Status200OK)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [HttpGet("byTitle")]
+    public async Task<ActionResult<List<MovieDTo>>> GetByTitle(string title)
+    {
+        var movieFromDb = await _movieRepository.GetMoviesByTitle(title);
+        var movie = _mapper.Map<List<MovieDTo>>(movieFromDb);
+        return Ok(movie);
+    }
+    
     [HttpPost]
     [ProducesResponseType(StatusCodes.Status201Created)]
     [ProducesResponseType(StatusCodes.Status403Forbidden)]
@@ -72,13 +95,45 @@ public class MovieController : ControllerBase
         if (!ModelState.IsValid) return BadRequest(ModelState);
         var isExistMovie = await _movieRepository.IsExistMovie(id);
         
-        var updateMovieMapped = _mapper.Map<Movie>(movieCreationDTo);
-        updateMovieMapped.Id = id;
+        var movieFromDb = await _movieRepository.GetMovieById(id);
+
+        _mapper.Map(movieCreationDTo, movieFromDb);
         
         if (!isExistMovie) return NotFound("The movie that you want to update doesn't exist");
-        var canUpdateMovie = await _movieRepository.UpdateMovie(updateMovieMapped);
+        var canUpdateMovie = await _movieRepository.UpdateMovie(movieFromDb);
         if (canUpdateMovie) return NoContent();
         return BadRequest("There are some errors inside our platform");
+    }
+
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status404NotFound)]
+    [ProducesResponseType(StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status403Forbidden)]
+    [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<MoviePatchDTo> patchDocument)
+    {
+        if (patchDocument is null) return BadRequest();
+        var movieFromDb = await _movieRepository.GetMovieById(id);
+        if (movieFromDb is null) return NotFound();
+        
+        movieFromDb.UpdatedAt = DateTime.Now;
+
+        var movieDTo = _mapper.Map<MoviePatchDTo>(movieFromDb);
+        
+        patchDocument.ApplyTo(movieDTo, ModelState);
+        
+        var isValid = TryValidateModel(movieDTo);
+        
+        if (!isValid) return BadRequest(ModelState);
+
+        _mapper.Map(movieDTo, movieFromDb);
+
+        var canToUpdate = await _movieRepository.Save();
+
+        if (!canToUpdate) return BadRequest("Something error has occurred");
+
+        return NoContent();
     }
 
     [ProducesResponseType(StatusCodes.Status204NoContent)]

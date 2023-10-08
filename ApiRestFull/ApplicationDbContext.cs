@@ -12,6 +12,10 @@ public class ApplicationDbContext : DbContext
 
     public DbSet<Actor> Actors { get; set; }
 
+    public DbSet<MovieCategories> MovieCategories { get; set; }
+
+    public DbSet<MoviesActors> MoviesActors { get; set; }
+
     public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options) : base(options) { }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)

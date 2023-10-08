@@ -15,7 +15,7 @@ public class ActorRepository : IActorRepository
     
     public async Task<List<Actor>> GetActors()
     {
-        return await _context.Actors
+        return  await _context.Actors
             .Include(x => x.MoviesActors)
             .ThenInclude(x => x.Movie)
             .ToListAsync();
@@ -30,12 +30,15 @@ public class ActorRepository : IActorRepository
 
     public async Task<bool> CreateActor(Actor actor)
     {
+        actor.CreationDate = DateTime.Now;
+        actor.UpdatedAt = DateTime.Now;
         _context.Actors.Add(actor);
         return await Save();
     }
 
     public async Task<bool> UpdateActor(Actor actor)
     {
+        actor.UpdatedAt = DateTime.Now;
         _context.Actors.Update(actor);
         return await Save();
     }
@@ -54,6 +57,18 @@ public class ActorRepository : IActorRepository
     public async Task<bool> IsExistActor(int id)
     {
         return await _context.Actors.AnyAsync(x => x.Id == id);
+    }
+    
+    public int CalculateAge(DateTime birthDate)
+    {
+        var age = DateTime.Now.Year - birthDate.Year;
+
+        if (age > 100) return 0;
+        
+        if (DateTime.Now.Date < birthDate.AddYears(age))
+            age--;
+        
+        return age;
     }
 
     public async Task<bool> Save()

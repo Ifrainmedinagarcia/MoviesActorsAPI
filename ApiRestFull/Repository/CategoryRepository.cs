@@ -31,13 +31,14 @@ public class CategoryRepository : ICategoryRepository
     public async Task<bool> CreateCategory(Category category)
     {
         category.CreationDate = DateTime.Now;
+        category.UpdatedAt = DateTime.Now;
         _context.Categories.Add(category);
         return await Save();
     }
 
     public async Task<bool> UpdateCategory(Category category)
     {
-        category.CreationDate = DateTime.Now;
+        category.UpdatedAt = DateTime.Now;
         _context.Categories.Update(category);
         return await Save();
     }

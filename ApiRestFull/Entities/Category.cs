@@ -7,5 +7,7 @@ public class Category
     public int Id { get; set; }
     public string CategoryName { get; set; }
     public DateTime CreationDate { get; set; }
+    
+    public DateTime UpdatedAt { get; set; }
     public List<MovieCategories> MovieCategories{ get; set; }
 }

@@ -12,5 +12,6 @@ public interface IActorRepository
     Task<bool> DeleteActor(Actor actor);
     Task<bool> IsExistActor(string name);
     Task<bool> IsExistActor(int id);
+    int CalculateAge(DateTime birthDate);
     Task<bool> Save();
 }

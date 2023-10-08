@@ -2,6 +2,7 @@ using ApiRestFull.DTO;
 using ApiRestFull.Entities;
 using ApiRestFull.Repository.IRepository;
 using AutoMapper;
+using Microsoft.AspNetCore.JsonPatch;
 using Microsoft.AspNetCore.Mvc;
 
 namespace ApiRestFull.Controllers;
@@ -26,6 +27,10 @@ public class ActorController : ControllerBase
     {
         var actorsFromDb = await _actorRepository.GetActors();
         var actors = _mapper.Map<List<ActorDTo>>(actorsFromDb);
+        foreach (var actor in actors)
+        {
+            actor.Age = _actorRepository.CalculateAge(actor.Birthday);
+        }
         return Ok(actors);
     }
 
@@ -36,6 +41,9 @@ public class ActorController : ControllerBase
     {
         var actorFromDb = await _actorRepository.GetActorById(id);
         var actor = _mapper.Map<ActorDTo>(actorFromDb);
+     
+        actor.Age = _actorRepository.CalculateAge(actor.Birthday);
+        
         return Ok(actor);
     }
 
@@ -54,5 +62,67 @@ public class ActorController : ControllerBase
         }
         return CreatedAtRoute("GetActorById", new{Id = newActor.Id}, newActor);
     }
-    
+
+    [HttpPut("{id:int}")]
+    public async Task<ActionResult> Put(ActorCreationDTo actorCreationDTo, int id)
+    {
+        if (!ModelState.IsValid) return BadRequest($"The model is with error {ModelState}");
+
+        var isExistActorById = await _actorRepository.IsExistActor(id);
+
+        if (!isExistActorById)
+            return NotFound("The actor that you try to update is not exist, please try with another id");
+
+        var actorFromDb = await _actorRepository.GetActorById(id);
+
+        _mapper.Map(actorCreationDTo, actorFromDb);
+        
+        var canUpdateActor = await _actorRepository.UpdateActor(actorFromDb);
+
+        if (!canUpdateActor) return BadRequest("some went wrong, please try again");
+
+        return NoContent();
+
+    }
+
+    [HttpPatch("{id:int}")]
+    public async Task<ActionResult> Patch(int id, [FromBody] JsonPatchDocument<ActorPatchDTo> jsonPatchDocument)
+    {
+        if (!ModelState.IsValid) return BadRequest();
+        var actorFromDb = await _actorRepository.GetActorById(id);
+        if (actorFromDb is null) return NotFound();
+
+        actorFromDb.UpdatedAt = DateTime.Now;
+
+        var movieDto = _mapper.Map<ActorPatchDTo>(actorFromDb);
+        
+        jsonPatchDocument.ApplyTo(movieDto, ModelState);
+        
+        var isValid = TryValidateModel(movieDto);
+        if (!isValid) return BadRequest();
+
+        _mapper.Map(movieDto, actorFromDb);
+
+        var canToUpdate = await _actorRepository.Save();
+
+        if (!canToUpdate) return BadRequest($"Something error has occurred {ModelState}");
+
+        return NoContent();
+    }
+
+    [HttpDelete("{id:int}")]
+    public async Task<ActionResult> Delete(int id)
+    {
+        var isExistActorById = await _actorRepository.IsExistActor(id);
+        var actor = await _actorRepository.GetActorById(id);
+
+        if (!isExistActorById)
+            return NotFound("The actor that you try to delete is not exist, please try with another id");
+
+        var canDelete = await _actorRepository.DeleteActor(actor);
+
+        if (!canDelete) return BadRequest($"something error has occurred while we were trying to delete the actor: {actor}");
+
+        return NoContent();
+    }
 }

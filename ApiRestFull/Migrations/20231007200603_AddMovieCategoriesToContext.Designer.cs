@@ -4,6 +4,7 @@ using ApiRestFull;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace ApiRestFull.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231007200603_AddMovieCategoriesToContext")]
+    partial class AddMovieCategoriesToContext
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -124,7 +127,7 @@ namespace ApiRestFull.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("MovieCategories");
+                    b.ToTable("Type");
                 });
 
             modelBuilder.Entity("ApiRestFull.Entities.MoviesActors", b =>
@@ -142,7 +145,7 @@ namespace ApiRestFull.Migrations
 
                     b.HasIndex("MovieId");
 
-                    b.ToTable("MoviesActors");
+                    b.ToTable("Type1");
                 });
 
             modelBuilder.Entity("ApiRestFull.Entities.MovieCategories", b =>
